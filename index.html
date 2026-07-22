@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>domservice SRL — клининговая компания в Кишинёве</title>
+<meta name="description" content="Профессиональная уборка квартир, домов и офисов в Кишинёве. Быстро, аккуратно, с гарантией результата.">
+
+<!-- Lucide icons via CDN -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+
+<style>
+  :root {
+    --teal-900: #0b3d3e;
+    --teal-800: #0f5257;
+    --teal-700: #147a80;
+    --teal-600: #1a9aa1;
+    --teal-500: #22b3ba;
+    --teal-100: #e3f7f8;
+    --teal-50: #f2fcfc;
+    --accent: #ff9457;
+    --accent-dark: #e87c3e;
+    --ink: #122b2c;
+    --muted: #5b7677;
+    --white: #ffffff;
+    --bg: #f7fbfb;
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+    --shadow-soft: 0 10px 30px rgba(15, 82, 87, 0.08);
+    --shadow-hover: 0 16px 40px rgba(15, 82, 87, 0.14);
+    --container: 1140px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  img, svg { display: block; }
+
+  a { color: inherit; text-decoration: none; }
+
+  ul { list-style: none; }
+
+  .container {
+    width: 100%;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .icon {
+    width: 1em;
+    height: 1em;
+    stroke-width: 2;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 26px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    white-space: nowrap;
+  }
+  .btn svg { width: 18px; height: 18px; }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--white);
+    box-shadow: 0 8px 20px rgba(255, 148, 87, 0.35);
+  }
+  .btn-primary:hover {
+    background: var(--accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(255, 148, 87, 0.42);
+  }
+
+  .btn-outline {
+    background: var(--white);
+    color: var(--teal-700);
+    border: 1.5px solid var(--teal-100);
+    box-shadow: var(--shadow-soft);
+  }
+  .btn-outline:hover {
+    border-color: var(--teal-500);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    background: var(--teal-50);
+    color: var(--teal-700);
+  }
+  .btn-ghost:hover { background: var(--teal-100); }
+
+  .btn-block { width: 100%; }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(247, 251, 251, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  }
+  header.scrolled {
+    border-bottom-color: rgba(15, 82, 87, 0.08);
+    box-shadow: 0 4px 20px rgba(15, 82, 87, 0.06);
+    background: rgba(247, 251, 251, 0.97);
+  }
+
+  .nav-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    gap: 16px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--teal-800);
+    letter-spacing: -0.02em;
+  }
+  .logo .logo-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--teal-500), var(--teal-700));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 6px 14px rgba(20, 122, 128, 0.35);
+  }
+  .logo .logo-badge svg { width: 20px; height: 20px; }
+  .logo span.accent-dot { color: var(--accent); }
+
+  nav.main-nav {
+    display: none;
+    gap: 28px;
+    align-items: center;
+  }
+  nav.main-nav a {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--teal-800);
+    opacity: 0.75;
+    transition: opacity 0.2s ease;
+    position: relative;
+  }
+  nav.main-nav a:hover { opacity: 1; }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-actions .btn { padding: 11px 18px; font-size: 14px; }
+  .header-actions .btn span.hide-mobile { display: none; }
+
+  .burger {
+    display: flex;
+    background: var(--white);
+    border: 1.5px solid var(--teal-100);
+    border-radius: 10px;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .burger svg { width: 20px; height: 20px; color: var(--teal-800); }
+
+  .mobile-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+    background: var(--white);
+    border-bottom: 1px solid var(--teal-100);
+  }
+  .mobile-menu.open { max-height: 400px; }
+  .mobile-menu ul {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px 20px;
+    gap: 4px;
+  }
+  .mobile-menu a {
+    display: block;
+    padding: 12px 8px;
+    font-weight: 600;
+    color: var(--teal-800);
+    border-radius: 10px;
+  }
+  .mobile-menu a:hover { background: var(--teal-50); }
+
+  /* ---------- Reveal animation ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.08s; }
+  .reveal-delay-2 { transition-delay: 0.16s; }
+  .reveal-delay-3 { transition-delay: 0.24s; }
+  .reveal-delay-4 { transition-delay: 0.32s; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    padding: 56px 0 64px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -120px;
+    right: -140px;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(34,179,186,0.18), rgba(34,179,186,0) 70%);
+    z-index: 0;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    bottom: -160px;
+    left: -160px;
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,148,87,0.14), rgba(255,148,87,0) 70%);
+    z-index: 0;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+    text-align: center;
+  }
+  .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--teal-100);
+    color: var(--teal-700);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 999px;
+  }
+  .badge-pill svg { width: 15px; height: 15px; }
+
+  .hero h1 {
+    font-size: clamp(30px, 7vw, 52px);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: var(--teal-900);
+    max-width: 720px;
+  }
+  .hero h1 .highlight {
+    color: var(--teal-500);
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .hero p.lead {
+    font-size: clamp(16px, 3vw, 19px);
+    color: var(--muted);
+    max-width: 560px;
+  }
+
+  .hero-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: 320px;
+  }
+  .hero-cta .btn { width: 100%; padding: 16px 24px; font-size: 16px; }
+
+  .hero-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    justify-content: center;
+    font-size: 13.5px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .hero-trust li { display: flex; align-items: center; gap: 6px; }
+  .hero-trust svg { width: 16px; height: 16px; color: var(--teal-500); }
+
+  /* hero icon composition */
+  .hero-art {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1.15 / 1;
+  }
+  .art-card {
+    position: absolute;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .art-main {
+    inset: 8% 14%;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(160deg, var(--teal-500), var(--teal-700));
+    box-shadow: 0 20px 50px rgba(15, 82, 87, 0.28);
+  }
+  .art-main svg { width: 42%; height: 42%; color: white; opacity: 0.95; }
+  .art-chip {
+    width: 76px;
+    height: 76px;
+    animation: float 5s ease-in-out infinite;
+  }
+  .art-chip svg { width: 34px; height: 34px; color: var(--teal-600); }
+  .art-chip.chip-1 { top: -4%; left: -2%; animation-delay: 0s; }
+  .art-chip.chip-2 { top: 6%; right: -6%; animation-delay: 1.2s; }
+  .art-chip.chip-3 { bottom: 2%; left: -8%; animation-delay: 2.1s; }
+  .art-chip.chip-4 { bottom: -6%; right: 4%; animation-delay: 0.6s; }
+  .art-chip.chip-4 svg { color: var(--accent); }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* ---------- Section generic ---------- */
+  section { padding: 64px 0; }
+  .section-head {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 40px;
+  }
+  .eyebrow {
+    display: inline-block;
+    color: var(--accent-dark);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .section-head h2 {
+    font-size: clamp(26px, 5vw, 36px);
+    font-weight: 800;
+    color: var(--teal-900);
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+  .section-head p {
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  .bg-alt { background: var(--white); }
+
+  /* ---------- Cards grid generic ---------- */
+  .grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 28px 22px;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .icon-tile {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--teal-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .icon-tile svg { width: 26px; height: 26px; color: var(--teal-600); }
+  .icon-tile.accent-tile { background: #fff1e7; }
+  .icon-tile.accent-tile svg { color: var(--accent-dark); }
+
+  .card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--teal-900);
+    margin-bottom: 8px;
+  }
+  .card p { color: var(--muted); font-size: 14.5px; }
+
+  /* ---------- Why us ---------- */
+  #why .grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* ---------- Services ---------- */
+  #services .grid { grid-template-columns: 1fr; }
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .service-card .icon-tile { margin-bottom: 4px; }
+
+  /* ---------- How it works ---------- */
+  .steps {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+    counter-reset: step;
+  }
+  .step {
+    position: relative;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 30px 22px 24px;
+    box-shadow: var(--shadow-soft);
+    text-align: center;
+  }
+  .step-num {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    font-weight: 800;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 18px rgba(255, 148, 87, 0.4);
+  }
+  .step .icon-tile {
+    margin: 12px auto 16px;
+    background: var(--teal-100);
+  }
+  .step h3 { font-size: 16.5px; margin-bottom: 8px; color: var(--teal-900); }
+  .step p { color: var(--muted); font-size: 14px; }
+
+  .steps-connector {
+    display: none;
+  }
+
+  /* ---------- Reviews ---------- */
+  .review-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+  }
+  .review-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 26px 22px;
+    box-shadow: var(--shadow-soft);
+  }
+  .review-stars {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 14px;
+    color: var(--accent);
+  }
+  .review-stars svg { width: 16px; height: 16px; fill: var(--accent); }
+  .review-card p.review-text {
+    color: var(--ink);
+    font-size: 14.5px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .review-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .review-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal-500), var(--teal-700));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .review-author .name { font-weight: 700; font-size: 14.5px; color: var(--teal-900); }
+  .review-author .meta { font-size: 12.5px; color: var(--muted); }
+
+  /* ---------- Contact / Footer ---------- */
+  #contact {
+    background: linear-gradient(180deg, var(--teal-900), #082b2c);
+    color: white;
+    padding: 64px 0 0;
+  }
+  #contact .section-head h2 { color: white; }
+  #contact .section-head p { color: rgba(255,255,255,0.65); }
+  #contact .eyebrow { color: var(--accent); }
+
+  .contact-grid {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: 1fr;
+    margin-bottom: 56px;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .contact-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 16px;
+    border-radius: var(--radius-md);
+  }
+  .contact-item .icon-tile {
+    background: rgba(34, 179, 186, 0.18);
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .contact-item .icon-tile svg { color: var(--teal-500); }
+  .contact-item h4 { font-size: 14px; margin-bottom: 4px; color: rgba(255,255,255,0.55); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+  .contact-item p, .contact-item a { font-size: 15.5px; font-weight: 600; color: white; }
+
+  .social-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .social-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .social-btn:hover { background: var(--teal-600); transform: translateY(-3px); }
+  .social-btn svg { width: 19px; height: 19px; color: white; }
+
+  .contact-form {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 28px 22px;
+    color: var(--ink);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .contact-form h3 {
+    font-size: 20px;
+    color: var(--teal-900);
+    margin-bottom: 6px;
+  }
+  .contact-form p.form-sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal-800);
+    margin-bottom: 6px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #e2eeee;
+    background: var(--teal-50);
+    font-size: 14.5px;
+    font-family: inherit;
+    color: var(--ink);
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--teal-500);
+    background: white;
+  }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .form-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 40px;
+    padding: 22px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+  }
+  .footer-bottom .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 16px;
+    color: white;
+  }
+  .footer-bottom .footer-logo svg { width: 18px; height: 18px; color: var(--teal-500); }
+
+  /* ---------- Floating action button ---------- */
+  .fab-group {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .fab {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+    transition: transform 0.2s ease;
+    color: white;
+  }
+  .fab:hover { transform: scale(1.08); }
+  .fab svg { width: 26px; height: 26px; }
+  .fab-whatsapp { background: #25D366; }
+  .fab-call {
+    background: var(--accent);
+    animation: pulse 2.4s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 10px 24px rgba(0,0,0,0.22), 0 0 0 0 rgba(255,148,87,0.5); }
+    70% { box-shadow: 0 10px 24px rgba(0,0,0,0.22), 0 0 0 14px rgba(255,148,87,0); }
+    100% { box-shadow: 0 10px 24px rgba(0,0,0,0.22), 0 0 0 0 rgba(255,148,87,0); }
+  }
+
+  /* ---------- Tablet / Desktop ---------- */
+  @media (min-width: 720px) {
+    #why .grid { grid-template-columns: repeat(2, 1fr); }
+    #services .grid { grid-template-columns: repeat(2, 1fr); }
+    .steps { grid-template-columns: repeat(2, 1fr); }
+    .review-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-inner { text-align: center; }
+  }
+
+  @media (min-width: 900px) {
+    nav.main-nav { display: flex; }
+    .burger { display: none; }
+    .header-actions .btn span.hide-mobile { display: inline; }
+
+    .hero-inner {
+      flex-direction: row;
+      text-align: left;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+    .hero-content { flex: 1; display: flex; flex-direction: column; gap: 22px; align-items: flex-start; max-width: 540px; }
+    .hero-cta { flex-direction: row; max-width: none; }
+    .hero-cta .btn { width: auto; }
+    .hero-trust { justify-content: flex-start; }
+    .hero-art { flex: 1; max-width: 460px; }
+
+    #why .grid { grid-template-columns: repeat(4, 1fr); }
+    #services .grid { grid-template-columns: repeat(4, 1fr); }
+    .steps { grid-template-columns: repeat(4, 1fr); }
+    .review-grid { grid-template-columns: repeat(3, 1fr); }
+
+    .contact-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+    section { padding: 88px 0; }
+    .hero { padding: 70px 0 90px; }
+  }
+
+  @media (min-width: 1180px) {
+    #services .grid { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header id="site-header">
+  <div class="nav-wrap container">
+    <a href="#top" class="logo">
+      <span class="logo-badge"><i data-lucide="sparkles"></i></span>
+      domservice<span class="accent-dot">.</span>
+    </a>
+
+    <nav class="main-nav">
+      <a href="#why">Почему мы</a>
+      <a href="#services">Услуги</a>
+      <a href="#how">Как это работает</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#contact">Контакты</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="tel:+37360000000" class="btn btn-outline">
+        <i data-lucide="phone" class="icon"></i>
+        <span class="hide-mobile">+373 60 00 00 00</span>
+      </a>
+      <a href="https://wa.me/37360000000" target="_blank" rel="noopener" class="btn btn-primary">
+        <i data-lucide="message-circle" class="icon"></i>
+        <span class="hide-mobile">WhatsApp</span>
+      </a>
+      <button class="burger" id="burgerBtn" aria-label="Меню">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#why">Почему мы</a></li>
+      <li><a href="#services">Услуги</a></li>
+      <li><a href="#how">Как это работает</a></li>
+      <li><a href="#reviews">Отзывы</a></li>
+      <li><a href="#contact">Контакты</a></li>
+    </ul>
+  </div>
+</header>
+
+<div id="top"></div>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-content reveal in-view">
+      <span class="badge-pill">
+        <i data-lucide="map-pin"></i>
+        Кишинёв и пригороды
+      </span>
+      <h1>Чистота, которой можно <span class="highlight">доверять</span></h1>
+      <p class="lead">
+        domservice SRL — профессиональная уборка квартир, домов и офисов.
+        Работаем быстро, аккуратно и с гарантией результата — вы просто
+        возвращаетесь в чистое пространство.
+      </p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">
+          <i data-lucide="calendar-check"></i>
+          Заказать уборку
+        </a>
+        <a href="tel:+37360000000" class="btn btn-outline">
+          <i data-lucide="phone-call"></i>
+          Позвонить сейчас
+        </a>
+      </div>
+      <ul class="hero-trust">
+        <li><i data-lucide="shield-check"></i> Застрахованы</li>
+        <li><i data-lucide="leaf"></i> Экосредства</li>
+        <li><i data-lucide="clock-4"></i> Приезд в день заявки</li>
+      </ul>
+    </div>
+
+    <div class="hero-art reveal reveal-delay-2 in-view">
+      <div class="art-card art-main">
+        <i data-lucide="sparkles"></i>
+      </div>
+      <div class="art-card art-chip chip-1">
+        <i data-lucide="spray-can"></i>
+      </div>
+      <div class="art-card art-chip chip-2">
+        <i data-lucide="droplets"></i>
+      </div>
+      <div class="art-card art-chip chip-3">
+        <i data-lucide="brush"></i>
+      </div>
+      <div class="art-card art-chip chip-4">
+        <i data-lucide="badge-check"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHY US ===================== -->
+<section id="why" class="bg-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Наши преимущества</span>
+      <h2>Почему выбирают domservice</h2>
+      <p>Мы ценим ваше время и пространство — поэтому работаем на совесть и без сюрпризов.</p>
+    </div>
+    <div class="grid">
+      <div class="card reveal">
+        <div class="icon-tile"><i data-lucide="zap"></i></div>
+        <h3>Быстро</h3>
+        <p>Выезжаем в день обращения, укладываемся точно в согласованное время.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="icon-tile"><i data-lucide="leaf"></i></div>
+        <h3>Экологичные средства</h3>
+        <p>Используем безопасную химию — без резкого запаха и вреда для детей и питомцев.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="icon-tile"><i data-lucide="shield-check"></i></div>
+        <h3>Застрахованы</h3>
+        <p>Ответственность компании застрахована, ваше имущество под защитой.</p>
+      </div>
+      <div class="card reveal reveal-delay-3">
+        <div class="icon-tile"><i data-lucide="users"></i></div>
+        <h3>Опытный персонал</h3>
+        <p>Сотрудники проходят обучение и работают по проверенным чек-листам.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SERVICES ===================== -->
+<section id="services">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Услуги</span>
+      <h2>Чем мы можем помочь</h2>
+      <p>От поддерживающей уборки до генеральной — подберём формат под вашу задачу.</p>
+    </div>
+    <div class="grid">
+      <div class="card service-card reveal">
+        <div class="icon-tile"><i data-lucide="building-2"></i></div>
+        <h3>Уборка квартир</h3>
+        <p>Регулярная и разовая уборка квартир любой площади.</p>
+      </div>
+      <div class="card service-card reveal reveal-delay-1">
+        <div class="icon-tile"><i data-lucide="home"></i></div>
+        <h3>Уборка домов</h3>
+        <p>Комплексный уход за частными домами и коттеджами.</p>
+      </div>
+      <div class="card service-card reveal reveal-delay-2">
+        <div class="icon-tile"><i data-lucide="briefcase"></i></div>
+        <h3>Уборка офисов</h3>
+        <p>Поддержание порядка в офисах, коворкингах и торговых точках.</p>
+      </div>
+      <div class="card service-card reveal reveal-delay-3">
+        <div class="icon-tile accent-tile"><i data-lucide="sparkles"></i></div>
+        <h3>Генеральная уборка</h3>
+        <p>Глубокая уборка всех поверхностей, техники и труднодоступных мест.</p>
+      </div>
+      <div class="card service-card reveal">
+        <div class="icon-tile accent-tile"><i data-lucide="hammer"></i></div>
+        <h3>Уборка после ремонта</h3>
+        <p>Удаляем строительную пыль, следы краски и скотча, готовим к заезду.</p>
+      </div>
+      <div class="card service-card reveal reveal-delay-1">
+        <div class="icon-tile"><i data-lucide="app-window"></i></div>
+        <h3>Мытьё окон и фасадов</h3>
+        <p>Окна, рамы, балконы и фасадные конструкции без разводов.</p>
+      </div>
+      <div class="card service-card reveal reveal-delay-2">
+        <div class="icon-tile"><i data-lucide="sofa"></i></div>
+        <h3>Химчистка мебели и ковров</h3>
+        <p>Глубокая чистка мягкой мебели, ковров и матрасов.</p>
+      </div>
+      <div class="card service-card reveal reveal-delay-3">
+        <div class="icon-tile"><i data-lucide="repeat"></i></div>
+        <h3>Регулярная уборка для бизнеса</h3>
+        <p>Абонентское обслуживание офисов и коммерческих помещений.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section id="how" class="bg-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Процесс</span>
+      <h2>Как это работает</h2>
+      <p>Четыре простых шага от заявки до идеального результата.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <div class="icon-tile"><i data-lucide="clipboard-list"></i></div>
+        <h3>Оставляете заявку</h3>
+        <p>По телефону, WhatsApp или через форму на сайте.</p>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">2</div>
+        <div class="icon-tile"><i data-lucide="calculator"></i></div>
+        <h3>Рассчитываем стоимость</h3>
+        <p>Уточняем детали и присылаем прозрачную смету.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">3</div>
+        <div class="icon-tile"><i data-lucide="spray-can"></i></div>
+        <h3>Проводим уборку</h3>
+        <p>Команда приезжает со своим инвентарём и средствами.</p>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-num">4</div>
+        <div class="icon-tile"><i data-lucide="clipboard-check"></i></div>
+        <h3>Принимаете результат</h3>
+        <p>Проверяете качество вместе с бригадиром по чек-листу.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REVIEWS ===================== -->
+<section id="reviews">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Отзывы</span>
+      <h2>Что говорят клиенты</h2>
+      <p>Несколько отзывов от наших клиентов из Кишинёва.</p>
+    </div>
+    <div class="review-grid">
+      <div class="review-card reveal">
+        <div class="review-stars">
+          <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+        </div>
+        <p class="review-text">«Заказывала генеральную уборку перед приездом гостей — приехали вовремя, всё сделали аккуратно и быстро. Квартира сияет, буду обращаться снова.»</p>
+        <div class="review-author">
+          <div class="review-avatar">М</div>
+          <div>
+            <div class="name">Мария К.</div>
+            <div class="meta">Квартира, Ботаника</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-1">
+        <div class="review-stars">
+          <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+        </div>
+        <p class="review-text">«Подключили domservice на регулярное обслуживание офиса. Ребята дисциплинированные, работают по графику, никаких проблем за полгода сотрудничества.»</p>
+        <div class="review-author">
+          <div class="review-avatar">А</div>
+          <div>
+            <div class="name">Андрей П.</div>
+            <div class="meta">Офис, центр Кишинёва</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-2">
+        <div class="review-stars">
+          <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+        </div>
+        <p class="review-text">«Убирали дом после ремонта — пыли было очень много. Справились отлично, вымыли даже те места, о которых я сама забыла. Рекомендую.»</p>
+        <div class="review-author">
+          <div class="review-avatar">Е</div>
+          <div>
+            <div class="name">Елена В.</div>
+            <div class="meta">Частный дом, Дурлешты</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT / FOOTER ===================== -->
+<section id="contact">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Контакты</span>
+      <h2>Свяжитесь с нами</h2>
+      <p>Ответим на вопросы и рассчитаем стоимость уборки в течение дня.</p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <div class="contact-item">
+          <div class="icon-tile"><i data-lucide="phone"></i></div>
+          <div>
+            <h4>Телефон</h4>
+            <a href="tel:+37360000000">+373 60 00 00 00</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="icon-tile"><i data-lucide="map-pin"></i></div>
+          <div>
+            <h4>Адрес</h4>
+            <p>г. Кишинёв, ул. Примерная, 12, Молдова</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="icon-tile"><i data-lucide="clock"></i></div>
+          <div>
+            <h4>Часы работы</h4>
+            <p>Пн–Сб: 08:00–20:00, Вс: по договорённости</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="icon-tile"><i data-lucide="mail"></i></div>
+          <div>
+            <h4>Email</h4>
+            <a href="mailto:info@domservice.md">info@domservice.md</a>
+          </div>
+        </div>
+
+        <div class="social-row">
+          <a href="https://wa.me/37360000000" target="_blank" rel="noopener" class="social-btn" aria-label="WhatsApp">
+            <i data-lucide="message-circle"></i>
+          </a>
+          <a href="#" class="social-btn" aria-label="Viber">
+            <i data-lucide="phone-call"></i>
+          </a>
+          <a href="#" class="social-btn" aria-label="Instagram">
+            <i data-lucide="instagram"></i>
+          </a>
+          <a href="#" class="social-btn" aria-label="Facebook">
+            <i data-lucide="facebook"></i>
+          </a>
+          <a href="#" class="social-btn" aria-label="Telegram">
+            <i data-lucide="send"></i>
+          </a>
+        </div>
+      </div>
+
+      <form class="contact-form reveal reveal-delay-1" id="requestForm">
+        <h3>Оставить заявку</h3>
+        <p class="form-sub">Форма пока не отправляется — подключим приём заявок позже.</p>
+
+        <div class="form-group">
+          <label for="name">Имя</label>
+          <input type="text" id="name" name="name" placeholder="Как к вам обращаться">
+        </div>
+        <div class="form-group">
+          <label for="phone">Телефон</label>
+          <input type="tel" id="phone" name="phone" placeholder="+373 6_ ___ ___">
+        </div>
+        <div class="form-group">
+          <label for="service">Тип уборки</label>
+          <select id="service" name="service">
+            <option>Уборка квартиры</option>
+            <option>Уборка дома</option>
+            <option>Уборка офиса</option>
+            <option>Генеральная уборка</option>
+            <option>Уборка после ремонта</option>
+            <option>Мытьё окон и фасадов</option>
+            <option>Химчистка мебели и ковров</option>
+            <option>Регулярная уборка для бизнеса</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="comment">Комментарий</label>
+          <textarea id="comment" name="comment" placeholder="Площадь, адрес, удобное время..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <i data-lucide="send"></i>
+          Отправить заявку
+        </button>
+        <p class="form-note">Нажимая «Отправить», вы соглашаетесь на обработку персональных данных.</p>
+      </form>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-logo">
+        <i data-lucide="sparkles"></i>
+        domservice SRL
+      </div>
+      <p>© 2026 domservice SRL. Клининговые услуги в Кишинёве, Молдова.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FLOATING ACTIONS ===================== -->
+<div class="fab-group">
+  <a href="https://wa.me/37360000000" target="_blank" rel="noopener" class="fab fab-whatsapp" aria-label="Написать в WhatsApp">
+    <i data-lucide="message-circle"></i>
+  </a>
+  <a href="tel:+37360000000" class="fab fab-call" aria-label="Позвонить">
+    <i data-lucide="phone"></i>
+  </a>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.lucide) { lucide.createIcons(); }
+
+    var header = document.getElementById('site-header');
+    var onScroll = function () {
+      if (window.scrollY > 12) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    var burger = document.getElementById('burgerBtn');
+    var mobileMenu = document.getElementById('mobileMenu');
+    burger.addEventListener('click', function () {
+      mobileMenu.classList.toggle('open');
+      var isOpen = mobileMenu.classList.contains('open');
+      burger.innerHTML = isOpen ? '<i data-lucide="x"></i>' : '<i data-lucide="menu"></i>';
+      if (window.lucide) lucide.createIcons();
+    });
+    mobileMenu.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        mobileMenu.classList.remove('open');
+        burger.innerHTML = '<i data-lucide="menu"></i>';
+        if (window.lucide) lucide.createIcons();
+      });
+    });
+
+    var revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(function (el) { io.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('in-view'); });
+    }
+
+    var form = document.getElementById('requestForm');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Спасибо! Форма пока в демо-режиме — свяжитесь с нами по телефону или WhatsApp.');
+    });
+  });
+</script>
+
+</body>
+</html>
